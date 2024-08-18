@@ -10,6 +10,7 @@ def home(request):
        data.save()
     return render(request,'Todolist.html',context)
 
+
 def delete(request,id):
     data1=tasks.objects.get(id=id)
     sav=data1.delete()
