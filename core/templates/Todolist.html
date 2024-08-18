@@ -1,42 +1,41 @@
-    {% load static %}
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{% static 'css/Todo.css' %}">
-        <title>ToDo List</title>
-    </head>
-    <body>
-        <form method="POST" >
-            {% csrf_token %}
-            <div class="container">
-                <div class="todo-header">
-                    <h2>ToDo List</h2>
-                    <img src="{% static 'images/sticky-notes.png'%}" height="50px" />
-                </div>
-                <div class="input-field">
-                    <textarea placeholder="Enter your new todo" name="task" required></textarea>
-                    <button type="submit" class="add-task-button">Add Task</button>
-                </div>
-                <ul class="todoLists">
-                    {% for i in data %}
-                        <li class="list">
-                            {{forloop.counter}} . 
-                            &nbsp; <p class="task">{{ i.taskname }}</p>
-                            <div class="icons">
-                                <a href="{% url 'update' i.id %}" class='model-btn'><img src="/static/images/editn.png" alt="edit"></a> 
-                                <a href="{% url 'delete' i.id %}"><img src="/static/images/Fdelete.png" alt="Delete" novalidate></a>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-                <div class="pending-tasks">
-                    <span style="color:rgb(255, 255, 255);">You have <span class="pending-num" style="color:rgb(255, 0, 0);">{{data.count}}</span> tasks pending.</span>
-                    <a href="{% url 'all' %}" class="clear-button">Clear All</a>
-                </div>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/Todo.css' %}">
+    <title>ToDo List</title>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="container">
+            <div class="todo-header">
+                <h2>ToDo List</h2>
+                <img src="{% static 'images/sticky-notes.png' %}" height="50px" />
             </div>
-        </form >
-       </div>
-    </body>
-    </html>
+            <div class="input-field">
+                <textarea placeholder="Enter your new todo" name="task" required></textarea>
+                <button type="submit" class="add-task-button">Add Task</button>
+            </div>
+            <ul class="todoLists">
+                {% for i in data %}
+                    <li class="list">
+                        {{forloop.counter}} . 
+                        &nbsp; <p class="task">{{ i.taskname }}</p>
+                        <div class="icons">
+                            <a href="{% url 'update' i.id %}" class='model-btn'><img src="/static/images/editn.png" alt="edit"></a> 
+                            <a href="{% url 'delete' i.id %}"><img src="/static/images/Fdelete.png" alt="Delete" novalidate></a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="pending-tasks">
+                <span style="color:rgb(255, 255, 255);">You have <span class="pending-num" style="color:rgb(255, 0, 0);">{{data.count}}</span> tasks pending.</span>
+                <a href="{% url 'all' %}" class="clear-button">Clear All</a>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
