@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple form for editing text">
+    <title>Text Editor</title>
+    {% load static %}
+    <link rel="stylesheet" href="{%static 'css/Edit.css'%}">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <form method="post" action="">
+                {% csrf_token %}
+                <input id="text-input" type="text" name="Newtask" value="{{data.taskname}}">
+                <button type="submit">Edit</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

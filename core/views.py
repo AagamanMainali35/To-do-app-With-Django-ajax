@@ -18,6 +18,7 @@ def delete(request,id):
         return redirect('homepage')
     return render(request,'Todolist.html')
 
+
 def deleteall(request):
     data=tasks.objects.all()
     save=data.delete()
@@ -27,4 +28,14 @@ def deleteall(request):
     return render(request,'Todolist.html')
 
      
+def update(request, id):
+    data=tasks.objects.get(id=id)
+    context={'data':data}
+    if request.method == 'POST':
+        task=request.POST.get('Newtask')
+        print(task)
+        data.taskname=task
+        data.save()
+        return redirect('homepage')
+    return render(request, 'Edit.html',context)
     

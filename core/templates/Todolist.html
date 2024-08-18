@@ -1,212 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToDo List</title>
-    <style>
-        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
-        * {
-            margin: 0;
-            padding: 0;
-            font-family: "Poppins", sans-serif;
-            box-sizing: border-box;
-        }
-        body {
-            background: #78c1f3;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-image: url(../static/images/background.jpg);
-            user-select: none;
-        }
-
-        .container {
-            background: #ffffff4a;
-            padding: 25px;
-            width: 550px;
-            border-radius: 10px;
-        }
-
-        .todo-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-left: 5px;
-            justify-content: center;
-        }
-
-        .todo-header > img {
-            height: 30px;
-            margin-left: 8px;
-        }
-
-        .container .input-field {
-            position: relative;
-            height: 64px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-field textarea {
-            height: 100%;
-            width: calc(100% - 120px); /* Adjust width to make space for the button */
-            outline: none;
-            font-size: 18px;
-            font-weight: 400;
-            border-radius: 8px;
-            padding: 18px 15px;
-            border: 1px solid #ccc;
-            resize: none; /* Disable resizing */
-            overflow: hidden; /* Hide scrollbars */
-        }
-
-        .input-field button.add-task-button {
-            margin-left: 10px;
-            padding: 10px 20px;
-            border: none;
-            background-color: #4070f480;
-            color: #ffffff;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            height: 100%;
-            flex-shrink: 0;
-        }
-
-        .input-field button.add-task-button:hover {
-            background-color: #0e4bf1;
-        }
-
-        .container .todoLists {
-            max-height: 380px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .todoLists::-webkit-scrollbar {
-            width: 8px; /* Width of the scrollbar */
-        }
-
-        .todoLists::-webkit-scrollbar-track {
-            background: #f2f2f2; /* Color of the scrollbar track */
-            border-radius: 10px; /* Rounded corners for the scrollbar track */
-        }
-
-        .todoLists::-webkit-scrollbar-thumb {
-            background: #4070f4; /* Color of the scrollbar thumb */
-            border-radius: 10px; /* Rounded corners for the scrollbar thumb */
-        }
-
-        .todoLists::-webkit-scrollbar-thumb:hover {
-            background: #0e4bf1; /* Color of the scrollbar thumb on hover */
-        }
-
-        .todoLists .list {
-            display: flex;
-            align-items: center;
-            list-style: none;
-            background-color: #f2f2f2;
-            padding: 20px 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-            position: relative;
-            justify-content: flex-start; /* Ensure task and icons are aligned properly */
-            max-height: 100px; /* Limit the height of the list item */
-        }
-        .todoLists .list input {
-            height: 16px;
-            min-width: 16px;
-            accent-color: #4070f4;
-            margin-right: 10px; /* Space between the checkbox and the text */
-        }
-        .list input:checked ~ .task {
-            text-decoration: line-through;
-        }
-        .container .pending-tasks {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 25px;
-        }
-        .pending-tasks span {
-            color: #333;
-        }
-        .pending-tasks .clear-button {
-            padding: 6px 12px;
-            border: none;
-            background: #4070f456;
-            color: #fff;
-            font-size: 14px;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none; /* Remove underline */
-            white-space: nowrap;
-        }
-        .pending-tasks .clear-button:hover {
-            background-color: #0e4bf1;
-        }
-        .todoLists .list .task {
-            flex: 1; /* Take up remaining space */
-            overflow-x: auto; /* Allow horizontal scroll */
-            white-space: nowrap; 
-            padding-right: 50px; 
-        }
-        .todoLists .list .task::-webkit-scrollbar {
-            height: 0; /* Hide the scrollbar */
-        }
-        .todoLists .list .icons {
-            display: flex;
-            align-items: center;
-            margin-left: auto; /* Push icons to the right */
-        }
-        .todoLists .list a {
-            display: inline-block;
-            margin-left: 10px; 
-        }
-        .todoLists .list a img {
-            height: 25px; /* Increase icon size */
-            width: 25px;  /* Increase icon size */
-            transition: transform 0.3s; /* Smooth transition for hover effects */
-            cursor: pointer; /* Pointer cursor to indicate clickability */
-            background: none; /* Remove the background */
-            border-radius: 0; /* Remove any border-radius */
-        }
-        .todoLists .list a:hover img {
-            transform: scale(1.2); /* Slightly enlarge the icon on hover */
-        }
-    </style>
-</head>
-<body>
-    <form action="{% url 'homepage' %}" method="post">
-        {% csrf_token %}
-        <div class="container">
-            <div class="todo-header">
-                <h2>ToDo List</h2>
-                <img src="../static/images/notes_5590494.png" height="50px" />
+    {% load static %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/Todo.css' %}">
+        <title>ToDo List</title>
+    </head>
+    <body>
+        <form method="POST" >
+            {% csrf_token %}
+            <div class="container">
+                <div class="todo-header">
+                    <h2>ToDo List</h2>
+                    <img src="{% static 'images/sticky-notes.png'%}" height="50px" />
+                </div>
+                <div class="input-field">
+                    <textarea placeholder="Enter your new todo" name="task" required></textarea>
+                    <button type="submit" class="add-task-button">Add Task</button>
+                </div>
+                <ul class="todoLists">
+                    {% for i in data %}
+                        <li class="list">
+                            {{forloop.counter}} . 
+                            &nbsp; <p class="task">{{ i.taskname }}</p>
+                            <div class="icons">
+                                <a href="{% url 'update' i.id %}" class='model-btn'><img src="/static/images/editn.png" alt="edit"></a> 
+                                <a href="{% url 'delete' i.id %}"><img src="/static/images/Fdelete.png" alt="Delete" novalidate></a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="pending-tasks">
+                    <span style="color:rgb(255, 255, 255);">You have <span class="pending-num" style="color:rgb(255, 0, 0);">{{data.count}}</span> tasks pending.</span>
+                    <a href="{% url 'all' %}" class="clear-button">Clear All</a>
+                </div>
             </div>
-            <div class="input-field">
-                <textarea placeholder="Enter your new todo" name="task"></textarea>
-                <button type="submit" class="add-task-button">Add Task</button>
-            </div>
-            <ul class="todoLists">
-                {% for i in data %}
-                    <li class="list">
-                        <input type="checkbox">
-                        <p class="task">{{ i.taskname }}</p>
-                        <div class="icons">
-                            <a href="{% url 'delete' i.id %}" class="delete-icon"><img src="../static/images/delete_12236906.png" alt="Delete"></a>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-            <div class="pending-tasks">
-                <span>You have <span class="pending-num" style="color:rgb(23 0 255);">{{data.count}}</span> tasks pending.</span>
-                <a href="{% url 'all' %}" class="clear-button">Clear All</a>
-            </div>
-        </div>
-    </form>
-</body>
-</html>
+        </form >
+       </div>
+    </body>
+    </html>
