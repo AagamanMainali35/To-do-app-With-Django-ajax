@@ -6,6 +6,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/Todo.css' %}">
     <title>ToDo List</title>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .modal a {
+            text-decoration: none;
+            padding: 10px 20px;
+            color: #fff;
+            border-radius: 5px;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        .confirm-delete {
+            background-color: #28a745; /* Green color */
+        }
+
+        .cancel-delete {
+            background-color: #dc3545; /* Red color */
+        }
+    </style>
 </head>
 <body>
     <form method="POST">
@@ -21,14 +59,30 @@
             </div>
             <ul class="todoLists">
                 {% for i in data %}
-                    <li class="list">
-                        {{forloop.counter}} . 
+                    <li class="list">   
+                        {{forloop.counter}} 
                         &nbsp; <p class="task">{{ i.taskname }}</p>
                         <div class="icons">
-                            <a href="{% url 'update' i.id %}" class='model-btn'><img src="/static/images/editn.png" alt="edit"></a> 
-                            <a href="{% url 'delete' i.id %}"><img src="/static/images/Fdelete.png" alt="Delete" novalidate></a>
+                            <a class="model-btn open-modal" data-target="#modal-update-{{ i.id }}"><img src="{% static 'images/editn.png' %}" alt="edit"></a> 
+                            <a class="delete-btn" data-target="#modal-delete-{{ i.id }}" href="#"><img src="{% static 'images/Fdelete.png' %}" alt="Delete" novalidate></a>
                         </div>
                     </li>
+                    <!-- Update Confirmation Modal -->
+                    <div id="modal-update-{{ i.id }}" class="modal">
+                        <div class="modal-content">
+                            <p>Are you sure you want to proceed with the update?</p>
+                            <a href="{% url 'update' i.id %}" class="yes-link">Yes</a>
+                            <a href="#" class="no-link">No</a>
+                        </div>
+                    </div>
+                    <!-- Delete Confirmation Modal -->
+                    <div id="modal-delete-{{ i.id }}" class="modal">
+                        <div class="modal-content">
+                            <p>Are you sure you want to delete this task?</p>
+                            <a href="{% url 'delete' i.id %}" class="confirm-delete">Yes</a>
+                            <a href="#" class="cancel-delete">No</a>
+                        </div>
+                    </div>
                 {% endfor %}
             </ul>
             <div class="pending-tasks">
@@ -37,5 +91,74 @@
             </div>
         </div>
     </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Open modals
+            document.querySelectorAll('.open-modal').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link action
+                    const targetModalId = button.getAttribute('data-target');
+                    const modal = document.querySelector(targetModalId);
+                    modal.style.display = 'block';
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent default link action
+                    const targetModalId = button.getAttribute('data-target');
+                    const modal = document.querySelector(targetModalId);
+                    modal.style.display = 'block';
+                });
+            });
+
+            // Handle modal link clicks
+            document.querySelectorAll('.modal').forEach(modal => {
+                const yesLink = modal.querySelector('.yes-link');
+                const noLink = modal.querySelector('.no-link');
+                const confirmDelete = modal.querySelector('.confirm-delete');
+                const cancelDelete = modal.querySelector('.cancel-delete');
+
+                if (yesLink) {
+                    yesLink.addEventListener('click', function(event) {
+                        // Allow the default link behavior (navigate to the URL)
+                        // Perform additional actions if needed
+                        // For example: alert('You clicked Yes');
+                    });
+                }
+
+                if (noLink) {
+                    noLink.addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent default link action
+                        modal.style.display = 'none';
+                    });
+                }
+
+                if (confirmDelete) {
+                    confirmDelete.addEventListener('click', function(event) {
+                        // Allow the default link behavior (navigate to the URL)
+                        // Perform additional actions if needed
+                        // For example: alert('You confirmed deletion');
+                    });
+                }
+
+                if (cancelDelete) {
+                    cancelDelete.addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent default link action
+                        modal.style.display = 'none';
+                    });
+                }
+            });
+
+            // Close modals when clicking outside of them
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(event) {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
