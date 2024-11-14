@@ -146,7 +146,7 @@
                     <div id="modal-update-{{ i.id }}" class="modal">
                         <div class="modal-content update-modal">
                             <h3>Edit Task</h3>
-                            <form method="POST" action="{% url 'update' i.id %}">
+                            <form method="POST" action="">
                                 {% csrf_token %}
                                 <textarea name="task" required class="edit-task-textarea">{{ i.taskname }}</textarea>
                                 <div class="modal-actions">
@@ -160,7 +160,7 @@
                     <div id="modal-delete-{{ i.id }}" class="modal">
                         <div class="modal-content">
                             <p>Are you sure you want to delete this task?</p>
-                            <a href="{% url 'delete' i.id %}" class="confirm-delete">Yes</a>
+                            <a href="#" class="confirm-delete">Yes</a>
                             <a href="#" class="cancel-delete">No</a>
                         </div>
                     </div>
@@ -168,11 +168,12 @@
             </ul>
             <div class="pending-tasks">
                 <span style="color:rgb(255, 255, 255);">You have <span class="pending-num" style="color:rgb(255, 0, 0);">{{data.count}}</span> tasks pending.</span>
-                <a href="{% url 'all' %}" class="clear-button">Clear All</a>
+                <a href="" class="clear-button">Clear All</a>
             </div>
         </div>
     </form>
     <script>
+        const domain=
         document.addEventListener('DOMContentLoaded', function() {
             const newTaskInput = document.getElementById('new-task');
 

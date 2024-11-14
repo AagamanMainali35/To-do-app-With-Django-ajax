@@ -1,42 +1,58 @@
-from django.shortcuts import render,redirect
-from core.models import *
-from core.models import *
+from django.shortcuts import render, redirect, get_object_or_404
+from core.models import tasks
+from .serializer import TodoSerializer
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+
+# Regular view to render home page
 def home(request):
-    datas=tasks.objects.all()
-    context={'data':datas}
-    if request.method == 'POST':
-       task= request.POST.get('task')
-       data=tasks.objects.create(taskname=task)
-       data.save()
-    return render(request,'Todolist.html',context)
+    datas = tasks.objects.all()
+    context = {'data': datas}
+    return render(request, 'Todolist.html', context)
 
+# API view to get all tasks
+@api_view(['GET'])
+def getData(request):
+    datas = tasks.objects.all()
+    serializer = TodoSerializer(datas, many=True)
+    return Response(serializer.data)
 
-def delete(request,id):
-    data1=tasks.objects.get(id=id)
-    sav=data1.delete()
-    sav
-    if sav:
-        return redirect('homepage')
-    return render(request,'Todolist.html')
+# API view to get a single task by ID
+@api_view(['GET'])
+def getSingleData(request, id):
+    datas = get_object_or_404(tasks, id=id)
+    serializer = TodoSerializer(datas, many=False)
+    return Response(serializer.data)
 
+# API view to delete a task by ID
+@api_view(['DELETE'])
+def delete(request, id):
+    datas = get_object_or_404(tasks, id=id)
+    datas.delete()
+    return Response({'success': 'Data deleted successfully'})
 
-def deleteall(request):
-    data=tasks.objects.all()
-    save=data.delete()
-    save 
-    if save:
-      return redirect('homepage')
-    return render(request,'Todolist.html')
+# API view to create a new task
+@api_view(['POST'])
+def createdata(request):
+    serializer = TodoSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'success': 'Task created successfully'}, status=201)
+    return Response(serializer.errors, status=400)
 
-     
+# API view to update a task by ID
+@api_view(['PATCH'])
 def update(request, id):
-    data=tasks.objects.get(id=id)
-    context={'data':data}
-    if request.method == 'POST':
-        task=request.POST.get('Newtask')
-        print(task)
-        data.taskname=task
-        data.save()
-        return redirect('homepage')
-    return render(request, 'Edit.html',context)
-    
+    task = get_object_or_404(tasks, id=id)
+    serializer = TodoSerializer(task, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'success': 'Updated successfully'})
+    return Response({'error': 'Update failed'}, status=400)
+
+# API view to delete all tasks
+@api_view(['DELETE'])
+def deleteall(request):
+    tasks.objects.all().delete()
+    return Response({'success': 'All tasks deleted successfully'})
+
