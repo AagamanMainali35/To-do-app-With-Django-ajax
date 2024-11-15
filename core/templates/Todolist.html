@@ -1,216 +1,306 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/Todo.css' %}">
-    <title>ToDo List</title>
-    <style>
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
+    {% load static %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/Todo.css' %}">
+        <title>ToDo List</title>
+        <style>
+            /* Modal Styles */
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0,0,0,0.4);
+            }
 
-        .modal-content.update-modal {
-            background-color: #ffffff;
-            border-radius: 10px;
-            padding: 20px;
-            width: 50%;
-            max-width: 500px;
-            margin: 10% auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
+            .modal-content.update-modal {
+                background-color: #ffffff;
+                border-radius: 10px;
+                padding: 20px;
+                width: 50%;
+                max-width: 500px;
+                margin: 10% auto;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
 
-        .modal-content.update-modal h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #333;
-        }
+            .modal-content.update-modal h3 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+                color: #333;
+            }
 
-        .edit-task-textarea {
-            width: 100%;
-            min-height: 100px;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            resize: vertical;
-        }
+            .edit-task-textarea {
+                width: 100%;
+                min-height: 100px;
+                padding: 10px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                font-size: 1rem;
+                margin-bottom: 1rem;
+                resize: vertical;
+            }
 
-        .modal-actions {
-            display: flex;
-            justify-content: space-between;
-        }
+            .modal-actions {
+                display: flex;
+                justify-content: space-between;
+            }
 
-        .modal-actions button,
-        .modal-actions a {
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            text-align: center;
-            width: 45%;
-            color: #fff;
-            text-decoration: none;
-        }
+            .modal-actions button,
+            .modal-actions a {
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-size: 1rem;
+                cursor: pointer;
+                text-align: center;
+                width: 45%;
+                color: #fff;
+                text-decoration: none;
+            }
 
-        .confirm-update {
-            background-color: #28a745; /* Green */
-            border: none;
-            transition: background-color 0.3s;
-        }
+            .confirm-update {
+                background-color: #28a745; /* Green */
+                border: none;
+                transition: background-color 0.3s;
+            }
 
-        .confirm-update:hover {
-            background-color: #218838;
-        }
+            .confirm-update:hover {
+                background-color: #218838;
+            }
 
-        .cancel-update {
-            background-color: #dc3545; /* Red */
-            border: none;
-            transition: background-color 0.3s;
-        }
+            .cancel-update {
+                background-color: #dc3545; /* Red */
+                border: none;
+                transition: background-color 0.3s;
+            }
 
-        .cancel-update:hover {
-            background-color: #c82333;
-        }
+            .cancel-update:hover {
+                background-color: #c82333;
+            }
 
-        /* Delete Confirmation Styles */
-        .confirm-delete {
-            background-color: #28a745; /* Green */
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            color: #fff;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: background-color 0.3s;
-            margin:16px;
-        }
+            /* Delete Confirmation Styles */
+            .confirm-delete {
+                background-color: #28a745; /* Green */
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                color: #fff;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+                transition: background-color 0.3s;
+                margin:16px;
+            }
 
-        .confirm-delete:hover {
-            background-color: #218838;
-        }
+            .confirm-delete:hover {
+                background-color: #218838;
+            }
 
-        .cancel-delete {
-            background-color: #dc3545; /* Red */
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            color: #fff;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: background-color 0.3s;
-        }
+            .cancel-delete {
+                background-color: #dc3545; /* Red */
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                color: #fff;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+                transition: background-color 0.3s;
+            }
 
-        .cancel-delete:hover {
-            background-color: #c82333;
-        }
-    </style>
-</head>
-<body>
-    <form method="POST">
-        {% csrf_token %}
-        <div class="container">
-            <div class="todo-header">
-                <h2>ToDo List</h2>
-                <img src="{% static 'images/sticky-notes.png' %}" height="50px" />
+            .cancel-delete:hover {
+                background-color: #c82333;
+            }
+        </style>
+    </head>
+    <body>
+        <form method="POST" onsubmit="createdata(event)">
+            <div class="container">
+                <div class="todo-header">
+                    <h2>ToDo List</h2>
+                    <img src="{% static 'images/sticky-notes.png' %}" height="50px" />
+                </div>
+                <div class="input-field">
+                    <textarea placeholder="Enter your new todo" name="task" id="new-task"></textarea>
+                    <button type="submit" class="add-task-button">Add Task</button>
+                </div>
+                <ul class="todoLists" id="todorow">
+                    <!-- Tasks will be populated here -->
+                </ul>
+                <div class="pending-tasks">
+                    <span style="color:rgb(255, 255, 255);">You have <span class="pending-num" style="color:rgb(255, 0, 0);" id="count"><!-- value will get copulated --></span> tasks pending.</span>
+                    <a href="" class="clear-button" onclick="deleteall(event)">Clear All</a>
+                </div>
             </div>
-            <div class="input-field">
-                <textarea placeholder="Enter your new todo" name="task" id="new-task" required></textarea>
-                <button type="submit" class="add-task-button">Add Task</button>
-            </div>
-            <ul class="todoLists">
-                {% for i in data %}
-                    <li class="list">   
-                        {{forloop.counter}} 
-                        &nbsp; <p class="task">{{ i.taskname }}</p>
+        </form>
+        <script>
+            const domain = 'http://127.0.0.1:8000/';
+            const get_all_tasks = `api/get/`;
+            const get_single_task =`api/get/`;
+            const create_task = `api/create/`;
+            const update_task =  `api/update/`;
+            const delete_task = `api/delete/`;
+            const delete_all_tasks = `api/delete/`;
+
+            function getdata() {
+        fetch(domain + get_all_tasks)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('count').textContent = data.length;
+                const taskContainer = document.getElementById('todorow');
+                taskContainer.innerHTML = ''; 
+                for (let i = 0; i < data.length; i++) {
+                    const task = data[i];
+                    const taskElement = `<li class="list">
+                        ${i + 1}. &nbsp; 
+                        <p class="task" id="taskname${task.id}">${task.taskname}</p>
                         <div class="icons">
-                            <a class="model-btn open-modal" data-target="#modal-update-{{ i.id }}"><img src="{% static 'images/editn.png' %}" alt="edit"></a> 
-                            <a class="delete-btn" data-target="#modal-delete-{{ i.id }}" href="#"><img src="{% static 'images/Fdelete.png' %}" alt="Delete"></a>
+                            <a class="model-btn" onclick="openUpdateModal(${task.id})">
+                                <img src="{% static 'images/editn.png' %}" alt="edit">
+                            </a> 
+                            <a class="delete-btn" onclick="openDeleteModal(${task.id})" href="#">
+                                <img src="{% static 'images/Fdelete.png' %}" alt="Delete">
+                            </a>
                         </div>
                     </li>
                     <!-- Update Modal -->
-                    <div id="modal-update-{{ i.id }}" class="modal">
+                    <div id="modal-update-${task.id}" class="modal">
                         <div class="modal-content update-modal">
                             <h3>Edit Task</h3>
                             <form method="POST" action="">
                                 {% csrf_token %}
-                                <textarea name="task" required class="edit-task-textarea">{{ i.taskname }}</textarea>
+                                <textarea name="task" required class="edit-task-textarea" id='taskname'>${task.taskname}</textarea>
                                 <div class="modal-actions">
-                                    <button type="submit" class="confirm-update">Save Changes</button>
-                                    <a href="#" class="cancel-update">Cancel</a>
+                                    <button type="submit" class="confirm-update" onclick=updatedata(event,${task.id})>Save Changes</button>
+                                    <a href="#" class="cancel-update" onclick="closeModal(${task.id})">Cancel</a>
                                 </div>
                             </form>
                         </div>
                     </div>
                     <!-- Delete Modal -->
-                    <div id="modal-delete-{{ i.id }}" class="modal">
+                    <div id="modal-delete-${task.id}" class="modal">
                         <div class="modal-content">
                             <p>Are you sure you want to delete this task?</p>
-                            <a href="#" class="confirm-delete">Yes</a>
-                            <a href="#" class="cancel-delete">No</a>
+                            <a href="#" class="confirm-delete" onclick="deletedata(${task.id})">Yes</a>
+                            <a href="#" class="cancel-delete" onclick="closeModal(${task.id})">No</a>
                         </div>
-                    </div>
-                {% endfor %}
-            </ul>
-            <div class="pending-tasks">
-                <span style="color:rgb(255, 255, 255);">You have <span class="pending-num" style="color:rgb(255, 0, 0);">{{data.count}}</span> tasks pending.</span>
-                <a href="" class="clear-button">Clear All</a>
-            </div>
-        </div>
-    </form>
-    <script>
-        const domain=
-        document.addEventListener('DOMContentLoaded', function() {
-            const newTaskInput = document.getElementById('new-task');
+                    </div>`;
 
-            // Open modals and remove "required" from the new task input
-            document.querySelectorAll('.open-modal, .delete-btn').forEach(button => {
-                button.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    newTaskInput.removeAttribute('required'); // Remove 'required' attribute
-                    
-                    const targetModalId = button.getAttribute('data-target');
-                    const modal = document.querySelector(targetModalId);
-                    modal.style.display = 'block';
-                });
-            });
+                    // Append the task element to the container immediately
+                    taskContainer.innerHTML = taskContainer.innerHTML + taskElement;
+                }
+            })
 
-            // Handle modal close actions
-            document.querySelectorAll('.modal').forEach(modal => {
-                const cancelUpdate = modal.querySelector('.cancel-update');
-                const cancelDelete = modal.querySelector('.cancel-delete');
 
-                if (cancelUpdate) {
-                    cancelUpdate.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        modal.style.display = 'none';
-                        newTaskInput.setAttribute('required', ''); // Restore 'required' attribute
-                    });
+            .catch(error => console.error('Error fetching tasks:', error));
+    }
+
+            function deletedata(id){
+                console.log(id)
+                fetch(domain + delete_task + id+ '/', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken':'{{ csrf_token }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert('data delete sucessfull')
+                        closeModal(id);
+                        getdata(); 
+                    })
+                    .catch(error => console.error('Error deleting task:', error));
+            }
+
+            function deleteall(event){
+                event.preventDefault();
+                fetch(domain+delete_all_tasks,{
+                    method:'DELETE',
+                    headers:{
+                        'Content-Type':'application/json',
+                        'X-CSRFToken':'{{csrf_token}}'
+                    }
+                })
+                .then(response=>response.json())
+                .then(data=>{
+                    getdata()
+                })
+            }
+            
+            function createdata(event){
+                event.preventDefault();
+                const csrf=`{{csrf_token}}`
+                textarea=document.getElementById('new-task')
+                text=document.getElementById('new-task').value
+                
+
+                if (text==''){
+                    alert('No task to add')
+                }
+                else{
+                    data={taskname:text}
+                    console.log(data)
+                    fetch(domain+create_task,{
+                    method:'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
+                    body:JSON.stringify(data)
+                } )
+                .then(response=>response.json())
+                .then(data=>{
+                    textarea.value=''
+                    getdata()
+                })
                 }
 
-                if (cancelDelete) {
-                    cancelDelete.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        modal.style.display = 'none';
-                        newTaskInput.setAttribute('required', ''); // Restore 'required' attribute
-                    });
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+                
+            }
+
+            function updatedata(event,id){
+                event.preventDefault()
+                updatedvalue=document.getElementById('taskname').value
+                console.log(updatedvalue)
+                data={taskname:updatedvalue}
+                fetch(domain+update_task+id+'/',{
+                    method:'PATCH',
+                    headers:{
+                        'Content-Type':'application/json',
+                        'X-CSRFToken':'{{csrf_token}}'
+                    },
+                    body:JSON.stringify(data)
+                })
+                .then(response=>response.json())
+                .then(data=>{
+                    getdata()   
+                })
+            }
+
+            function openUpdateModal(id) {
+                const modal = document.getElementById(`modal-update-${id}`);
+                modal.style.display = 'block';
+            }
+
+            function openDeleteModal(id) {
+                const modal = document.getElementById(`modal-delete-${id}`);
+                modal.style.display = 'block';
+            }
+
+            function closeModal(id) {
+                const modalUpdate = document.getElementById(`modal-update-${id}`);
+                const modalDelete = document.getElementById(`modal-delete-${id}`);
+                
+                if (modalUpdate) modalUpdate.style.display = 'none';
+                if (modalDelete) modalDelete.style.display = 'none';
+            }
+
+            getdata();
+        </script>
+    </body>
+    </html>

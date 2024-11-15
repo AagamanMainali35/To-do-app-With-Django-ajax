@@ -3,11 +3,14 @@ from core.models import tasks
 from .serializer import TodoSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.middleware.csrf import get_token
+
 
 # Regular view to render home page
 def home(request):
+    csrf=get_token(request)
     datas = tasks.objects.all()
-    context = {'data': datas}
+    context = {'data': datas,"csrf_token":csrf}
     return render(request, 'Todolist.html', context)
 
 # API view to get all tasks
