@@ -65,10 +65,9 @@ def deletedtargeted(request):
     try:
         ids = request.body
         val=json.loads(ids)
-        for value in val.items():
-           for i in value:
-               data=tasks.objects.get(id=i)
-               data.delete()
+        for i in val['ids']:
+            data=tasks.objects.get(id=i)
+            data.delete()
         return Response({'sucess': 'good test'}, status=200)
     except :
         return Response({'error': 'Invalid JSON format'}, status=400)
