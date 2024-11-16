@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="{% static 'css/Todo.css' %}">
         <title>ToDo List</title>
         <style>
-            /* Modal Styles */
+
             .modal {
                 display: none;
                 position: fixed;
@@ -118,6 +118,7 @@
             .cancel-delete:hover {
                 background-color: #c82333;
             }
+
         </style>
     </head>
     <body>
@@ -132,11 +133,11 @@
                     <button type="submit" class="add-task-button">Add Task</button>
                 </div>
                 <ul class="todoLists" id="todorow">
-                    <!-- Tasks will be populated here -->
                 </ul>
                 <div class="pending-tasks">
                     <span style="color:rgb(255, 255, 255);">You have <span class="pending-num" style="color:rgb(255, 0, 0);" id="count"><!-- value will get copulated --></span> tasks pending.</span>
                     <a href="" class="clear-button" onclick="deleteall(event)">Clear All</a>
+                    <a href="" class="clear-button" style="width:128px" onclick="delettarget(event)">Delete Selected</a>
                 </div>
             </div>
         </form>
@@ -148,58 +149,58 @@
             const update_task =  `api/update/`;
             const delete_task = `api/delete/`;
             const delete_all_tasks = `api/delete/`;
+            const target='api/delete/targeted'
 
             function getdata() {
-        fetch(domain + get_all_tasks)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('count').textContent = data.length;
-                const taskContainer = document.getElementById('todorow');
-                taskContainer.innerHTML = ''; 
-                for (let i = 0; i < data.length; i++) {
-                    const task = data[i];
-                    const taskElement = `<li class="list">
-                        ${i + 1}. &nbsp; 
-                        <p class="task" id="taskname${task.id}">${task.taskname}</p>
-                        <div class="icons">
-                            <a class="model-btn" onclick="openUpdateModal(${task.id})">
-                                <img src="{% static 'images/editn.png' %}" alt="edit">
-                            </a> 
-                            <a class="delete-btn" onclick="openDeleteModal(${task.id})" href="#">
-                                <img src="{% static 'images/Fdelete.png' %}" alt="Delete">
-                            </a>
+                fetch(domain + get_all_tasks)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('count').textContent = data.length;
+                    const taskContainer = document.getElementById('todorow');
+                    taskContainer.innerHTML = ''; 
+                    for (let i = 0; i < data.length; i++) {
+                        const task = data[i];
+                        const taskElement = `<li class="list">
+                            <input type="checkbox"  name="checkbox"  value="${task.id }" /> &nbsp &nbsp &nbsp; 
+                            <p class="task" id="taskname${task.id}">${task.taskname}</p>
+                            <div class="icons">
+                                <a class="model-btn" onclick="openUpdateModal(${task.id})">
+                                    <img src="{% static 'images/editn.png' %}" alt="edit">
+                                </a> 
+                                <a class="delete-btn" onclick="openDeleteModal(${task.id})" href="#">
+                                    <img src="{% static 'images/Fdelete.png' %}" alt="Delete">
+                                </a>
+                            </div>
+                        </li>
+                        <!-- Update Modal -->
+                        <div id="modal-update-${task.id}" class="modal">
+                            <div class="modal-content update-modal">
+                                <h3>Edit Task</h3>
+                                <form method="POST" action="">
+                                    {% csrf_token %}
+                                    <textarea name="task" required class="edit-task-textarea" id='taskname'>${task.taskname}</textarea>
+                                    <div class="modal-actions">
+                                        <button type="submit" class="confirm-update" onclick=updatedata(event,${task.id})>Save Changes</button>
+                                        <a href="#" class="cancel-update" onclick="closeModal(${task.id})">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </li>
-                    <!-- Update Modal -->
-                    <div id="modal-update-${task.id}" class="modal">
-                        <div class="modal-content update-modal">
-                            <h3>Edit Task</h3>
-                            <form method="POST" action="">
-                                {% csrf_token %}
-                                <textarea name="task" required class="edit-task-textarea" id='taskname'>${task.taskname}</textarea>
-                                <div class="modal-actions">
-                                    <button type="submit" class="confirm-update" onclick=updatedata(event,${task.id})>Save Changes</button>
-                                    <a href="#" class="cancel-update" onclick="closeModal(${task.id})">Cancel</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- Delete Modal -->
-                    <div id="modal-delete-${task.id}" class="modal">
-                        <div class="modal-content">
-                            <p>Are you sure you want to delete this task?</p>
-                            <a href="#" class="confirm-delete" onclick="deletedata(${task.id})">Yes</a>
-                            <a href="#" class="cancel-delete" onclick="closeModal(${task.id})">No</a>
-                        </div>
-                    </div>`;
+                        <!-- Delete Modal -->
+                        <div id="modal-delete-${task.id}" class="modal">
+                            <div class="modal-content">
+                                <p>Are you sure you want to delete this task?</p>
+                                <a href="#" class="confirm-delete" onclick="deletedata(${task.id})">Yes</a>
+                                <a href="#" class="cancel-delete" onclick="closeModal(${task.id})">No</a>
+                            </div>
+                        </div>`;
 
-                    // Append the task element to the container immediately
-                    taskContainer.innerHTML = taskContainer.innerHTML + taskElement;
-                }
-            })
+                        // Append the task element to the container immediately
+                        taskContainer.innerHTML = taskContainer.innerHTML + taskElement;
+                    }
+                })
 
-
-            .catch(error => console.error('Error fetching tasks:', error));
+                .catch(error => console.error('Error fetching tasks:', error));
     }
 
             function deletedata(id){
@@ -234,7 +235,32 @@
                     getdata()
                 })
             }
-            
+
+            function delettarget(event){
+                event.preventDefault()
+                data=[]
+                let id = document.querySelectorAll('input[name="checkbox"]:checked');    
+                for(i = 0; i<id.length ;i++){
+                    data.push(id[i].value)  
+                }
+                console.log(data)
+                bodydata={ids:data}
+                fetch(domain+target,
+                {
+                    method:'DELETE',
+                    headers:{
+                        'Content-type':'application/json',
+                       'X-CSRFToken':'{{csrf_token}}'
+                    },
+                    body:JSON.stringify(bodydata)   
+                }
+                )
+                .then(response=>response.json())
+                .then(data=>{
+                    getdata()
+                })
+            }
+
             function createdata(event){
                 event.preventDefault();
                 const csrf=`{{csrf_token}}`

@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from core.models import tasks
 from .serializer import TodoSerializer
@@ -58,4 +59,19 @@ def update(request, id):
 def deleteall(request):
     tasks.objects.all().delete()
     return Response({'success': 'All tasks deleted successfully'})
+
+@api_view(['DELETE'])
+def deletedtargeted(request):
+    try:
+        ids = request.body
+        val=json.loads(ids)
+        for value in val.items():
+           for i in value:
+               data=tasks.objects.get(id=i)
+               data.delete()
+        return Response({'sucess': 'good test'}, status=200)
+    except :
+        return Response({'error': 'Invalid JSON format'}, status=400)
+
+
 
