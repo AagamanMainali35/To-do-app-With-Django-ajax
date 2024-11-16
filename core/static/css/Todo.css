@@ -73,7 +73,7 @@ body {
     background-color: #0e4bf1;
 }
 .container .todoLists {
-    max-height: 380px;
+    max-height: 417px;
     overflow-y: auto;
     padding-right: 10px;
 }

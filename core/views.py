@@ -47,6 +47,7 @@ def createdata(request):
 # API view to update a task by ID
 @api_view(['PATCH'])
 def update(request, id):
+    print(request.data)
     task = get_object_or_404(tasks, id=id)
     serializer = TodoSerializer(task, data=request.data, partial=True)
     if serializer.is_valid():

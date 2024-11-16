@@ -1,336 +1,344 @@
-    {% load static %}
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{% static 'css/Todo.css' %}">
-        <title>ToDo List</title>
-        <style>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0,0,0,0.4);
-            }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/Todo.css' %}">
+    <title>ToDo List</title>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
 
-            .modal-content.update-modal {
-                background-color: #ffffff;
-                border-radius: 10px;
-                padding: 20px;
-                width: 50%;
-                max-width: 500px;
-                margin: 10% auto;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                text-align: center;
-            }
+        .modal-content.update-modal {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 50%;
+            max-width: 500px;
+            margin: 10% auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
 
-            .modal-content.update-modal h3 {
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
-                color: #333;
-            }
+        .modal-content.update-modal h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
 
-            .edit-task-textarea {
-                width: 100%;
-                min-height: 100px;
-                padding: 10px;
-                border-radius: 5px;
-                border: 1px solid #ccc;
-                font-size: 1rem;
-                margin-bottom: 1rem;
-                resize: vertical;
-            }
+        .edit-task-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
 
-            .modal-actions {
-                display: flex;
-                justify-content: space-between;
-            }
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+        }
 
-            .modal-actions button,
-            .modal-actions a {
-                padding: 10px 20px;
-                border-radius: 5px;
-                font-size: 1rem;
-                cursor: pointer;
-                text-align: center;
-                width: 45%;
-                color: #fff;
-                text-decoration: none;
-            }
+        .modal-actions button,
+        .modal-actions a {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+            width: 45%;
+            color: #fff;
+            text-decoration: none;
+        }
 
-            .confirm-update {
-                background-color: #28a745; /* Green */
-                border: none;
-                transition: background-color 0.3s;
-            }
+        .confirm-update {
+            background-color: #28a745;
+            /* Green */
+            border: none;
+            transition: background-color 0.3s;
+        }
 
-            .confirm-update:hover {
-                background-color: #218838;
-            }
+        .confirm-update:hover {
+            background-color: #218838;
+        }
 
-            .cancel-update {
-                background-color: #dc3545; /* Red */
-                border: none;
-                transition: background-color 0.3s;
-            }
+        .cancel-update {
+            background-color: #dc3545;
+            /* Red */
+            border: none;
+            transition: background-color 0.3s;
+        }
 
-            .cancel-update:hover {
-                background-color: #c82333;
-            }
+        .cancel-update:hover {
+            background-color: #c82333;
+        }
 
-            /* Delete Confirmation Styles */
-            .confirm-delete {
-                background-color: #28a745; /* Green */
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                color: #fff;
-                cursor: pointer;
-                text-decoration: none;
-                display: inline-block;
-                transition: background-color 0.3s;
-                margin:16px;
-            }
+        /* Delete Confirmation Styles */
+        .confirm-delete {
+            background-color: #28a745;
+            /* Green */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+            margin: 16px;
+        }
 
-            .confirm-delete:hover {
-                background-color: #218838;
-            }
+        .confirm-delete:hover {
+            background-color: #218838;
+        }
 
-            .cancel-delete {
-                background-color: #dc3545; /* Red */
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                color: #fff;
-                cursor: pointer;
-                text-decoration: none;
-                display: inline-block;
-                transition: background-color 0.3s;
-            }
+        .cancel-delete {
+            background-color: #dc3545;
+            /* Red */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
 
-            .cancel-delete:hover {
-                background-color: #c82333;
-            }
+        .cancel-delete:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
 
-        </style>
-    </head>
-    <body>
-        <form method="POST" onsubmit="createdata(event)">
-            <div class="container">
-                <div class="todo-header">
-                    <h2>ToDo List</h2>
-                    <img src="{% static 'images/sticky-notes.png' %}" height="50px" />
-                </div>
-                <div class="input-field">
-                    <textarea placeholder="Enter your new todo" name="task" id="new-task"></textarea>
-                    <button type="submit" class="add-task-button">Add Task</button>
-                </div>
-                <ul class="todoLists" id="todorow">
-                </ul>
-                <div class="pending-tasks">
-                    <span style="color:rgb(255, 255, 255);">You have <span class="pending-num" style="color:rgb(255, 0, 0);" id="count"><!-- value will get copulated --></span> tasks pending.</span>
-                    <a href="" class="clear-button" onclick="deleteall(event)">Clear All</a>
-                    <a href="" class="clear-button" style="width:128px" onclick="delettarget(event)">Delete Selected</a>
-                </div>
+<body>
+    <form method="POST" onsubmit="createdata(event)">
+        <div class="container">
+            <div class="todo-header">
+                <h2>ToDo List</h2>
+                <img src="{% static 'images/sticky-notes.png' %}" height="50px" />
             </div>
-        </form>
-        <script>
-            const domain = 'http://127.0.0.1:8000/';
-            const get_all_tasks = `api/get/`;
-            const get_single_task =`api/get/`;
-            const create_task = `api/create/`;
-            const update_task =  `api/update/`;
-            const delete_task = `api/delete/`;
-            const delete_all_tasks = `api/delete/`;
-            const target='api/delete/targeted'
+            <div class="input-field">
+                <textarea placeholder="Enter your new todo" name="task" id="new-task"></textarea>
+                <button type="submit" class="add-task-button">Add Task</button>
+            </div>
+            <ul class="todoLists" id="todorow">
+            </ul>
+            <div class="pending-tasks">
+                <span style="color:rgb(255, 255, 255);">You have <span class="pending-num" style="color:rgb(255, 0, 0);"
+                        id="count"><!-- value will get copulated --></span> tasks pending.</span>
+                <a href="" class="clear-button" onclick="deleteall(event)">Clear All</a>
+                <a href="" class="clear-button" style="width:128px" onclick="delettarget(event)">Delete Selected</a>
+            </div>
+        </div>
+    </form>
+    <script>
+        const domain = 'http://127.0.0.1:8000/';
+        const get_all_tasks = `api/get/`;
+        const get_single_task = `api/get/`;
+        const create_task = `api/create/`;
+        const update_task = `api/update/`;
+        const delete_task = `api/delete/`;
+        const delete_all_tasks = `api/delete/`;
+        const target = 'api/delete/targeted'
 
-            function getdata() {
-                fetch(domain + get_all_tasks)
+        function getdata() {
+            fetch(domain + get_all_tasks)
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('count').textContent = data.length;
                     const taskContainer = document.getElementById('todorow');
-                    taskContainer.innerHTML = ''; 
+                    taskContainer.innerHTML = '';
                     for (let i = 0; i < data.length; i++) {
                         const task = data[i];
-                        const taskElement = `<li class="list">
-                            <input type="checkbox"  name="checkbox"  value="${task.id }" /> &nbsp &nbsp &nbsp; 
-                            <p class="task" id="taskname${task.id}">${task.taskname}</p>
-                            <div class="icons">
-                                <a class="model-btn" onclick="openUpdateModal(${task.id})">
-                                    <img src="{% static 'images/editn.png' %}" alt="edit">
-                                </a> 
-                                <a class="delete-btn" onclick="openDeleteModal(${task.id})" href="#">
-                                    <img src="{% static 'images/Fdelete.png' %}" alt="Delete">
-                                </a>
-                            </div>
-                        </li>
-                        <!-- Update Modal -->
-                        <div id="modal-update-${task.id}" class="modal">
-                            <div class="modal-content update-modal">
-                                <h3>Edit Task</h3>
-                                <form method="POST" action="">
-                                    {% csrf_token %}
-                                    <textarea name="task" required class="edit-task-textarea" id='taskname'>${task.taskname}</textarea>
-                                    <div class="modal-actions">
-                                        <button type="submit" class="confirm-update" onclick=updatedata(event,${task.id})>Save Changes</button>
-                                        <a href="#" class="cancel-update" onclick="closeModal(${task.id})">Cancel</a>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <!-- Delete Modal -->
-                        <div id="modal-delete-${task.id}" class="modal">
-                            <div class="modal-content">
-                                <p>Are you sure you want to delete this task?</p>
-                                <a href="#" class="confirm-delete" onclick="deletedata(${task.id})">Yes</a>
-                                <a href="#" class="cancel-delete" onclick="closeModal(${task.id})">No</a>
-                            </div>
-                        </div>`;
-
-                        // Append the task element to the container immediately
+                        const taskElement = `
+                                        <li class="list">
+                                        <input type="checkbox" name="checkbox" value="${task.id}" /> &nbsp &nbsp &nbsp; 
+                                        <p class="task" id="taskname${task.id}">${task.taskname}</p>
+                                        <div class="icons">
+                                            <a class="model-btn" onclick="openUpdateModal(${task.id})">
+                                                <img src="{% static 'images/editn.png' %}" alt="edit">
+                                            </a> 
+                                            <a class="delete-btn" onclick="openDeleteModal(${task.id})" href="#">
+                                                <img src="{% static 'images/Fdelete.png' %}" alt="Delete">
+                                            </a>
+                                        </div>
+                                        </li>
+                                        <!-- Update Modal -->
+                                        <div id="modal-update-${task.id}" class="modal">
+                                            <div class="modal-content update-modal">
+                                                <h3>Edit Task</h3>
+                                                <form method="POST" action="">
+                                                    {% csrf_token %}
+                                                    <textarea name="task" required class="edit-task-textarea" id="taskname-${task.id}">${task.taskname}</textarea>
+                                                    <div class="modal-actions">
+                                                        <button type="submit" class="confirm-update" onclick="updatedata(event,${task.id})">Save Changes</button>
+                                                        <a href="#" class="cancel-update" onclick="closeModal(${task.id})">Cancel</a>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <!-- Delete Modal -->
+                                        <div id="modal-delete-${task.id}" class="modal">
+                                            <div class="modal-content update-modal">
+                                                <h3>Are you sure you want to delete this task?</h3>
+                                                <div class="modal-actions">
+                                                    <a href="#" class="confirm-delete" onclick="deletedata(${task.id})">Yes</a>
+                                                    <a href="#" class="cancel-update" onclick="closeModal(${task.id})">Cancel</a>
+                                                </div>
+                                            </div>
+                                        </div>`;
                         taskContainer.innerHTML = taskContainer.innerHTML + taskElement;
                     }
                 })
-
                 .catch(error => console.error('Error fetching tasks:', error));
-    }
+        }
 
-            function deletedata(id){
-                console.log(id)
-                fetch(domain + delete_task + id+ '/', {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken':'{{ csrf_token }}'
+        function deletedata(id) {
+            console.log(id)
+            fetch(domain + delete_task + id + '/', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    closeModal(id);
+                    getdata();
+                })
+                .catch(error => console.error('Error deleting task:', error));
+        }
+
+        function deleteall(event) {
+            event.preventDefault();
+            fetch(domain + delete_all_tasks, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{csrf_token}}'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    getdata()
+                })
+        }
+
+        function delettarget(event) {
+            event.preventDefault()
+            data = []
+            let id = document.querySelectorAll('input[name="checkbox"]:checked');
+            for (i = 0; i < id.length; i++) {
+                data.push(id[i].value)
+            }
+            console.log(data)
+            if (data.length == 0) {
+                alert('No data seleted for deleted')
+            }
+            else {
+                bodydata = { ids: data }
+                fetch(domain + target,
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-type': 'application/json',
+                            'X-CSRFToken': '{{csrf_token}}'
+                        },
+                        body: JSON.stringify(bodydata)
                     }
+                )
+                    .then(response => response.json())
+                    .then(data => {
+                        getdata()
+                    })
+            }
+        }
+
+        function createdata(event) {
+            event.preventDefault();
+            const csrf = `{{csrf_token}}`
+            textarea = document.getElementById('new-task')
+            text = document.getElementById('new-task').value
+
+
+            if (text == '') {
+                alert('No task to add')
+            }
+            else {
+                data = { taskname: text }
+                console.log(data)
+                fetch(domain + create_task, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
+                    body: JSON.stringify(data)
                 })
                     .then(response => response.json())
                     .then(data => {
-                        closeModal(id);
-                        getdata(); 
+                        textarea.value = ''
+                        getdata()
                     })
-                    .catch(error => console.error('Error deleting task:', error));
             }
 
-            function deleteall(event){
-                event.preventDefault();
-                fetch(domain+delete_all_tasks,{
-                    method:'DELETE',
-                    headers:{
-                        'Content-Type':'application/json',
-                        'X-CSRFToken':'{{csrf_token}}'
-                    }
-                })
-                .then(response=>response.json())
-                .then(data=>{
+
+        }
+
+        function updatedata(event, id) {
+            event.preventDefault()
+            console.log(id)
+            updatedvalue = document.getElementById(`taskname-${id}`).value
+            console.log(updatedvalue)
+            data = { taskname: updatedvalue }
+            console.log(data)
+            fetch(domain + update_task + id + '/', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{csrf_token}}'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
                     getdata()
                 })
-            }
+        }
 
-            function delettarget(event){
-                event.preventDefault()
-                data=[]
-                let id = document.querySelectorAll('input[name="checkbox"]:checked');    
-                for(i = 0; i<id.length ;i++){
-                    data.push(id[i].value)  
-                }
-                console.log(data)
-                if(data.length==0){
-                    alert('No data seleted for deleted')
-                }
-                else{
-                        bodydata={ids:data}
-                        fetch(domain+target,
-                        {
-                            method:'DELETE',
-                            headers:{
-                                'Content-type':'application/json',
-                            'X-CSRFToken':'{{csrf_token}}'
-                            },
-                            body:JSON.stringify(bodydata)   
-                        }
-                        )
-                        .then(response=>response.json())
-                        .then(data=>{
-                            getdata()
-                        })
-                    }
-            }
+        function openUpdateModal(id) {
+            const modal = document.getElementById(`modal-update-${id}`);
+            modal.style.display = 'block';
+        }
 
-            function createdata(event){
-                event.preventDefault();
-                const csrf=`{{csrf_token}}`
-                textarea=document.getElementById('new-task')
-                text=document.getElementById('new-task').value
-                
+        function openDeleteModal(id) {
+            const modal = document.getElementById(`modal-delete-${id}`);
+            modal.style.display = 'block';
+        }
 
-                if (text==''){
-                    alert('No task to add')
-                }
-                else{
-                    data={taskname:text}
-                    console.log(data)
-                    fetch(domain+create_task,{
-                    method:'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
-                    body:JSON.stringify(data)
-                } )
-                .then(response=>response.json())
-                .then(data=>{
-                    textarea.value=''
-                    getdata()
-                })
-                }
+        function closeModal(id) {
+            const modalUpdate = document.getElementById(`modal-update-${id}`);
+            const modalDelete = document.getElementById(`modal-delete-${id}`);
 
-                
-            }
+            if (modalUpdate) modalUpdate.style.display = 'none';
+            if (modalDelete) modalDelete.style.display = 'none';
+        }
 
-            function updatedata(event,id){
-                event.preventDefault()
-                updatedvalue=document.getElementById('taskname').value
-                console.log(updatedvalue)
-                data={taskname:updatedvalue}
-                fetch(domain+update_task+id+'/',{
-                    method:'PATCH',
-                    headers:{
-                        'Content-Type':'application/json',
-                        'X-CSRFToken':'{{csrf_token}}'
-                    },
-                    body:JSON.stringify(data)
-                })
-                .then(response=>response.json())
-                .then(data=>{
-                    getdata()   
-                })
-            }
+        getdata();
+    </script>
+</body>
 
-            function openUpdateModal(id) {
-                const modal = document.getElementById(`modal-update-${id}`);
-                modal.style.display = 'block';
-            }
-
-            function openDeleteModal(id) {
-                const modal = document.getElementById(`modal-delete-${id}`);
-                modal.style.display = 'block';
-            }
-
-            function closeModal(id) {
-                const modalUpdate = document.getElementById(`modal-update-${id}`);
-                const modalDelete = document.getElementById(`modal-delete-${id}`);
-                
-                if (modalUpdate) modalUpdate.style.display = 'none';
-                if (modalDelete) modalDelete.style.display = 'none';
-            }
-
-            getdata();
-        </script>
-    </body>
-    </html>
+</html>
